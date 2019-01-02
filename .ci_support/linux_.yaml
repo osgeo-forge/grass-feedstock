@@ -1,0 +1,61 @@
+c_compiler:
+- toolchain_c
+cairo:
+- '1.14'
+channel_sources:
+- conda-forge,defaults
+channel_targets:
+- conda-forge main
+cxx_compiler:
+- toolchain_cxx
+docker_image:
+- condaforge/linux-anvil
+freetype:
+- 2.9.1
+gdal:
+- '2.3'
+geos:
+- 3.7.0
+giflib:
+- '5.1'
+jpeg:
+- '9'
+krb5:
+- '1.16'
+libiconv:
+- '1.15'
+libpng:
+- 1.6.35
+libtiff:
+- 4.0.9
+numpy:
+- '1.9'
+pin_run_as_build:
+  cairo:
+    max_pin: x.x
+  freetype:
+    max_pin: x
+  gdal:
+    max_pin: x.x
+  geos:
+    max_pin: x.x.x
+  giflib:
+    max_pin: x.x
+  jpeg:
+    max_pin: x
+  krb5:
+    max_pin: x.x
+  libiconv:
+    max_pin: x.x
+  libpng:
+    max_pin: x.x
+  libtiff:
+    max_pin: x
+  proj4:
+    max_pin: x.x.x
+  sqlite:
+    max_pin: x
+proj4:
+- 5.2.0
+sqlite:
+- '3'
