@@ -1,0 +1,95 @@
+diff --git a/mswindows/osgeo4w/mklibs.sh b/mswindows/osgeo4w/mklibs.sh
+index 00a597a..407b6c8 100755
+--- a/mswindows/osgeo4w/mklibs.sh
++++ b/mswindows/osgeo4w/mklibs.sh
+@@ -21,7 +21,7 @@ PATH="$VSDIR/VC/bin:$PATH"
+ # add example for MS Visual Studio 2017 Community 64 bit
+ # PATH="$VSDIR/VC/Tools/MSVC/14.12.25827/bin/Hostx64/x64:$PATH"
+ PATH="$VSDIR/Common7/Tools:$PATH"
+-PATH="$PATH:/c/OSGeo4W${OSGEO4W_POSTFIX}/bin"
++PATH="$PATH:${LIBRARY_PREFIX_U}/bin"
+ export PATH
+ 
+ [ -d mswindows/osgeo4w/vc ] || mkdir mswindows/osgeo4w/vc
+diff --git a/mswindows/osgeo4w/package.sh b/mswindows/osgeo4w/package.sh
+index 74e4e83..7a0fa77 100755
+--- a/mswindows/osgeo4w/package.sh
++++ b/mswindows/osgeo4w/package.sh
+@@ -40,7 +40,7 @@ else
+     MINGW_POSTFIX=32
+ fi
+ 
+-export OSGEO4W_ROOT_MSYS="/c/OSGeo4W${OSGEO4W_POSTFIX}"
++export OSGEO4W_ROOT_MSYS="${LIBRARY_PREFIX_U}"
+ export OSGEO4W_ROOT="C:\\\OSGeo4W${OSGEO4W_POSTFIX}"
+ 
+ export PATH=/usr/bin:/mingw${MINGW_POSTFIX}/bin/:$OSGEO4W_ROOT_MSYS/bin:$PWD/mswindows/osgeo4w/lib:$PWD/mswindows/osgeo4w
+@@ -116,17 +116,18 @@ dll_to_a() {
+ 
+ log dll.to.a
+ [ -d mswindows/osgeo4w/lib ] || mkdir mswindows/osgeo4w/lib 
+-dll_to_a $OSGEO4W_ROOT_MSYS/bin/proj_5_2.dll    mswindows/osgeo4w/lib/libproj
++dll_to_a $OSGEO4W_ROOT_MSYS/bin/proj.dll    mswindows/osgeo4w/lib/libproj
+ dll_to_a $OSGEO4W_ROOT_MSYS/bin/iconv.dll       mswindows/osgeo4w/lib/libiconv
+ dll_to_a $OSGEO4W_ROOT_MSYS/bin/gdal203.dll     mswindows/osgeo4w/lib/libgdal
+ dll_to_a $OSGEO4W_ROOT_MSYS/bin/liblas_c.dll    mswindows/osgeo4w/lib/liblas_c
+ dll_to_a $OSGEO4W_ROOT_MSYS/bin/geos_c.dll      mswindows/osgeo4w/lib/libgeos_c
+ dll_to_a $OSGEO4W_ROOT_MSYS/bin/libtiff.dll     mswindows/osgeo4w/lib/libtiff
+ dll_to_a $OSGEO4W_ROOT_MSYS/bin/libpq.dll       mswindows/osgeo4w/lib/libpq
+-dll_to_a $OSGEO4W_ROOT_MSYS/bin/libmysql.dll       mswindows/osgeo4w/lib/libmysqlclient
++# dll_to_a $OSGEO4W_ROOT_MSYS/bin/libmysql.dll       mswindows/osgeo4w/lib/libmysqlclient
+ dll_to_a $OSGEO4W_ROOT_MSYS/bin/sqlite3.dll     mswindows/osgeo4w/lib/libsqlite3
+ dll_to_a $OSGEO4W_ROOT_MSYS/bin/cairo.dll       mswindows/osgeo4w/lib/libcairo
+-dll_to_a $OSGEO4W_ROOT_MSYS/bin/libfftw3-3.dll  mswindows/osgeo4w/lib/libfftw3
++dll_to_a $OSGEO4W_ROOT_MSYS/bin/fftw3.dll  mswindows/osgeo4w/lib/libfftw3
++dll_to_a $OSGEO4W_ROOT_MSYS/bin/freetype.dll  mswindows/osgeo4w/lib/libfreetype
+ dll_to_a $OSGEO4W_ROOT_MSYS/bin/pdcurses.dll  mswindows/osgeo4w/lib/libpdcurses
+ if [ "$MINGW_POSTFIX" = "64" ]; then
+     dll_to_a $OSGEO4W_ROOT_MSYS/bin/zlib1.dll       mswindows/osgeo4w/lib/libz
+@@ -141,7 +142,7 @@ fi
+ 
+ cp -uv $OSGEO4W_ROOT_MSYS/lib/libxdr.a          mswindows/osgeo4w/lib
+ #cp -uv $OSGEO4W_ROOT_MSYS/lib/libregex.a        mswindows/osgeo4w/lib
+-cp -uv $OSGEO4W_ROOT_MSYS/lib/libfreetype.dll.a mswindows/osgeo4w/lib
++# cp -uv $OSGEO4W_ROOT_MSYS/lib/libfreetype.dll.a mswindows/osgeo4w/lib
+ 
+ if ! [ -f mswindows/osgeo4w/configure-stamp ]; then
+ 
+@@ -222,8 +223,8 @@ sed -e "s#@VERSION@#$VERSION#g" -e "s#@GRASS_EXECUTABLE@#$GRASS_EXECUTABLE#g" \
+ 
+ if [ -n "$PACKAGE_PATCH" ]; then
+     log building vc libraries 
+-    OSGEO4W_POSTFIX=$OSGEO4W_POSTFIX sh \
+-        mswindows/osgeo4w/mklibs.sh $OSGEO4W_ROOT_MSYS/apps/grass/grass-$VERSION/lib/*.$VERSION.dll 
++    OSGEO4W_POSTFIX=$OSGEO4W_POSTFIX LIBRARY_PREFIX_U=$LIBRARY_PREFIX_U sh \
++        mswindows/osgeo4w/mklibs.sh $OSGEO4W_ROOT_MSYS/apps/grass/grass-$VERSION/lib/*.$VERSION.dll
+     mv mswindows/osgeo4w/vc/grass*.lib $OSGEO4W_ROOT_MSYS/apps/grass/grass-$VERSION/lib
+     
+     log creating package
+@@ -266,16 +267,16 @@ if [ -n "$PACKAGE_PATCH" ]; then
+ 	apps/grass/grass-$VERSION/bin
+     cp -uv /mingw${MINGW_POSTFIX}/etc/fonts/fonts.conf \
+ 	apps/grass/grass-$VERSION/etc
+-    
+-    # creating grass package
+-    tar -cjf $PDIR/grass$PACKAGE_POSTFIX-$VERSION-$PACKAGE_PATCH.tar.bz2 \
+-	apps/grass/grass-$VERSION \
+-	bin/${GRASS_EXECUTABLE}.bat.tmpl \
+-	etc/postinstall/grass${PACKAGE_POSTFIX}.bat \
+-	etc/preremove/grass${PACKAGE_POSTFIX}.bat
+-    
+-    # clean up
+-    rm bin/${GRASS_EXECUTABLE}.bat.tmpl
++
++    # # creating grass package
++    # tar -cjf $PDIR/grass$PACKAGE_POSTFIX-$VERSION-$PACKAGE_PATCH.tar.bz2 \
++	# apps/grass/grass-$VERSION \
++	# bin/${GRASS_EXECUTABLE}.bat.tmpl \
++	# etc/postinstall/grass${PACKAGE_POSTFIX}.bat \
++	# etc/preremove/grass${PACKAGE_POSTFIX}.bat
++
++    # # clean up
++    # rm bin/${GRASS_EXECUTABLE}.bat.tmpl
+ fi
+ 
+ log 

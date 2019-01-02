@@ -1,0 +1,115 @@
+{% set version = "7.4.2" %}
+
+package:
+  name: grass
+  version: {{ version }}
+
+source:
+  - url: https://grass.osgeo.org/grass74/source/grass-{{ version }}.tar.gz
+    sha256: 18eb19bc0aa4cd7be3f30f79ac83f9d0a29c63657f4c1b05bf4c5d5d57a8f46d
+    patches:
+      - 0001-platform.make.in.patch  # [osx]
+      - 0002-platform.make.in-linux.patch  # [linux]
+      - 0003-loader.py.patch  # [osx]
+      - 0004-rules.make.patch  # [osx]
+      - 0005-rules.make-linux.patch  # [linux]
+      - 0006-aclocal.m4.patch  # [osx]
+      - 0007-configure.patch  # [osx]
+      - 0008-install.make.patch  # [osx]
+      - 0009-module.make.patch  # [osx]
+      - 0010-shlib.make.patch  # [osx]
+      - 0011-win-package-mklibs.patch  # [win]
+
+build:
+  number: 1
+
+requirements:
+  build:
+    - {{ compiler('c') }}  # [unix]
+    - {{ compiler('cxx') }}  # [unix]
+    # Win build currently uses C:\msys64 standard/portable install
+    # - {{ compiler('m2w64_c') }}  # [win]
+    # - {{ compiler('m2w64_cxx') }}  # [win]
+    - pkg-config  # [unix]
+    - m4  # [unix]
+    - bison  # [unix]
+    - flex  # [unix]
+    - m2-patch  # [win]
+  host:
+    - python <3
+    - numpy
+    - gdal
+    - freetype
+    - cairo
+    - pandoc
+    - wxpython
+    - sqlite
+    - libpq  # [win]
+    - jpeg
+    - libpng
+    - libtiff
+    - libiconv
+    - fftw
+    - blas
+    - giflib
+    - python.app  # [osx]
+    - proj4
+    - geos
+    - krb5
+    - pillow
+    - liblas 1.8.*  # [win]
+    - libxdr  # [win]
+    - pdcurses  # [win]
+    # - gnu-regex  # [win]
+  run:
+    # TODO: Bunch of these are statically linked on Win; may be
+    #       able to skip run dependency, if no data files needed
+    - python <3
+    - numpy
+    - gdal
+    - freetype
+    - cairo
+    - matplotlib
+    - pandoc
+    - wxpython
+    - sqlite
+    - jpeg
+    - libpng
+    - libtiff
+    - libiconv
+    - fftw
+    - blas
+    - giflib
+    - python.app  # [osx]
+    - proj4
+    - geos
+    - krb5
+    - pillow
+    - pdcurses  # [win]
+    - liblas 1.8.*  # [win]
+
+test:
+  commands:
+  - grass74 --help
+  - grass74 --version
+  - grass74 --config
+
+about:
+  home: https://grasswiki.osgeo.org/
+  license: GPL-2.0
+  license_family: GPL
+  license_file: lib/init/license.txt
+  summary: Geographic Resources Analysis Support System
+  description: |
+    GRASS GIS, commonly referred to as GRASS (Geographic Resources
+    Analysis Support System), is a free and open source Geographic
+    Information System (GIS) software suite used for geospatial data
+    management and analysis, image processing, graphics and maps
+    production, spatial modeling, and visualization.
+  dev_url: https://grass.osgeo.org/development/
+  doc_url: https://grasswiki.osgeo.org/
+
+extra:
+  recipe-maintainers:
+    - mcflugen
+    - dakcarto
