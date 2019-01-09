@@ -1,0 +1,65 @@
+diff --git a/mswindows/osgeo4w/env.bat.tmpl b/mswindows/osgeo4w/env.bat.tmpl
+index be5b243..7980acc 100644
+--- a/mswindows/osgeo4w/env.bat.tmpl
++++ b/mswindows/osgeo4w/env.bat.tmpl
+@@ -8,12 +8,12 @@ REM Uncomment if you want to use Bash instead of Cmd
+ REM Note that msys package must be also installed
+ REM set GRASS_SH=%OSGEO4W_ROOT%\apps\msys\bin\sh.exe
+ 
+-set GRASS_PYTHON=%OSGEO4W_ROOT%\bin\python.exe
++set GRASS_PYTHON=%OSGEO4W_ROOT%\bin\python2
+ set PYTHONHOME=%OSGEO4W_ROOT%\apps\Python27
+ 
+-set GRASS_PROJSHARE=%OSGEO4W_ROOT%\share\proj
++set GRASS_PROJSHARE=%OSGEO4W_ROOT%\share
+ 
+-set PROJ_LIB=%OSGEO4W_ROOT%\share\proj
++set PROJ_LIB=%OSGEO4W_ROOT%\share
+ set GDAL_DATA=%OSGEO4W_ROOT%\share\gdal
+ set GEOTIFF_CSV=%OSGEO4W_ROOT%\share\epsg_csv
+ 
+diff --git a/mswindows/osgeo4w/grass.bat.tmpl b/mswindows/osgeo4w/grass.bat.tmpl
+index 3748626..5a546ff 100644
+--- a/mswindows/osgeo4w/grass.bat.tmpl
++++ b/mswindows/osgeo4w/grass.bat.tmpl
+@@ -5,14 +5,32 @@ rem # GRASS initialization bat script (OSGeo4W)
+ rem #
+ rem #########################################################################
+ 
+-SET OSGEO4W_ROOT=@osgeo4w@
++setlocal
++
++for %%a in (%~dp0\..) do set LIBRARY_PREFIX=%%~fa
++
++SET OSGEO4W_ROOT=%LIBRARY_PREFIX%
+ 
+ rem
+ rem Set environmental variables
+ rem
+-call %OSGEO4W_ROOT%\bin\o4w_env.bat
++if exist %OSGEO4W_ROOT%\bin\osgf_env.bat call %OSGEO4W_ROOT%\bin\osgf_env.bat
+ call %OSGEO4W_ROOT%\apps\grass\grass-@VERSION@\etc\env.bat
+ 
++rem See if python2 is already available in the environ
++for /f %%i in ('where python2') do set where_py2=%%i
++if exist "%where_py2%" (
++  if not "%where_py2%" == "%GRASS_PYTHON%" (
++    set "GRASS_PYTHON=%where_py2%"
++    rem Assume this is set in sys environ
++    set PYTHONHOME=
++  )
++)
++
++rem Add the standard GRASS Python2 packages
++set PYTHONPATH=%OSGEO4W_ROOT%\apps\grass-site-packages;%PYTHONPATH%
++path %OSGEO4W_ROOT%\apps\grass-site-packages\bin;%PATH%
++
+ rem
+ rem Launch GRASS GIS
+ rem
+@@ -22,3 +40,5 @@ rem
+ rem Pause on error
+ rem
+ if %ERRORLEVEL% GEQ 1 pause
++
++endlocal

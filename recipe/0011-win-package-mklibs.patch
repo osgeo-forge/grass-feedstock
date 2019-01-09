@@ -12,7 +12,7 @@ index 00a597a..407b6c8 100755
  
  [ -d mswindows/osgeo4w/vc ] || mkdir mswindows/osgeo4w/vc
 diff --git a/mswindows/osgeo4w/package.sh b/mswindows/osgeo4w/package.sh
-index 74e4e83..7a0fa77 100755
+index 8816c5f..967edc6 100755
 --- a/mswindows/osgeo4w/package.sh
 +++ b/mswindows/osgeo4w/package.sh
 @@ -40,7 +40,7 @@ else
@@ -24,17 +24,19 @@ index 74e4e83..7a0fa77 100755
  export OSGEO4W_ROOT="C:\\\OSGeo4W${OSGEO4W_POSTFIX}"
  
  export PATH=/usr/bin:/mingw${MINGW_POSTFIX}/bin/:$OSGEO4W_ROOT_MSYS/bin:$PWD/mswindows/osgeo4w/lib:$PWD/mswindows/osgeo4w
-@@ -116,17 +116,18 @@ dll_to_a() {
+@@ -116,22 +116,23 @@ dll_to_a() {
  
  log dll.to.a
  [ -d mswindows/osgeo4w/lib ] || mkdir mswindows/osgeo4w/lib 
 -dll_to_a $OSGEO4W_ROOT_MSYS/bin/proj_5_2.dll    mswindows/osgeo4w/lib/libproj
 +dll_to_a $OSGEO4W_ROOT_MSYS/bin/proj.dll    mswindows/osgeo4w/lib/libproj
  dll_to_a $OSGEO4W_ROOT_MSYS/bin/iconv.dll       mswindows/osgeo4w/lib/libiconv
- dll_to_a $OSGEO4W_ROOT_MSYS/bin/gdal203.dll     mswindows/osgeo4w/lib/libgdal
+-dll_to_a $OSGEO4W_ROOT_MSYS/bin/gdal204.dll     mswindows/osgeo4w/lib/libgdal
++dll_to_a $OSGEO4W_ROOT_MSYS/bin/gdal203.dll     mswindows/osgeo4w/lib/libgdal
  dll_to_a $OSGEO4W_ROOT_MSYS/bin/liblas_c.dll    mswindows/osgeo4w/lib/liblas_c
  dll_to_a $OSGEO4W_ROOT_MSYS/bin/geos_c.dll      mswindows/osgeo4w/lib/libgeos_c
- dll_to_a $OSGEO4W_ROOT_MSYS/bin/libtiff.dll     mswindows/osgeo4w/lib/libtiff
+-dll_to_a $OSGEO4W_ROOT_MSYS/bin/libtiff.dll     mswindows/osgeo4w/lib/libtiff
++dll_to_a $OSGEO4W_ROOT_MSYS/bin/tiff.dll     mswindows/osgeo4w/lib/libtiff
  dll_to_a $OSGEO4W_ROOT_MSYS/bin/libpq.dll       mswindows/osgeo4w/lib/libpq
 -dll_to_a $OSGEO4W_ROOT_MSYS/bin/libmysql.dll       mswindows/osgeo4w/lib/libmysqlclient
 +# dll_to_a $OSGEO4W_ROOT_MSYS/bin/libmysql.dll       mswindows/osgeo4w/lib/libmysqlclient
@@ -45,7 +47,14 @@ index 74e4e83..7a0fa77 100755
 +dll_to_a $OSGEO4W_ROOT_MSYS/bin/freetype.dll  mswindows/osgeo4w/lib/libfreetype
  dll_to_a $OSGEO4W_ROOT_MSYS/bin/pdcurses.dll  mswindows/osgeo4w/lib/libpdcurses
  if [ "$MINGW_POSTFIX" = "64" ]; then
-     dll_to_a $OSGEO4W_ROOT_MSYS/bin/zlib1.dll       mswindows/osgeo4w/lib/libz
+-    dll_to_a $OSGEO4W_ROOT_MSYS/bin/zlib1.dll       mswindows/osgeo4w/lib/libz
++    dll_to_a $OSGEO4W_ROOT_MSYS/bin/zlib.dll       mswindows/osgeo4w/lib/libz
+     dll_to_a $OSGEO4W_ROOT_MSYS/bin/libpng16.dll    mswindows/osgeo4w/lib/libpng
+-    dll_to_a $OSGEO4W_ROOT_MSYS/bin/jpeg.dll        mswindows/osgeo4w/lib/libjpeg
++    dll_to_a $OSGEO4W_ROOT_MSYS/bin/libjpeg.dll        mswindows/osgeo4w/lib/libjpeg
+ else
+ # TODO (related to dependencies)
+     dll_to_a $OSGEO4W_ROOT_MSYS/bin/zlib_osgeo.dll       mswindows/osgeo4w/lib/libz
 @@ -141,7 +142,7 @@ fi
  
  cp -uv $OSGEO4W_ROOT_MSYS/lib/libxdr.a          mswindows/osgeo4w/lib
@@ -55,7 +64,45 @@ index 74e4e83..7a0fa77 100755
  
  if ! [ -f mswindows/osgeo4w/configure-stamp ]; then
  
-@@ -222,8 +223,8 @@ sed -e "s#@VERSION@#$VERSION#g" -e "s#@GRASS_EXECUTABLE@#$GRASS_EXECUTABLE#g" \
+@@ -164,6 +165,10 @@ if ! [ -f mswindows/osgeo4w/configure-stamp ]; then
+             conf_opts=
+ 	fi
+ 	
++    echo "################### start env vars ###################"
++    env | sort
++    echo "################### end env vars ###################"
++
+ 	log configure
+ 	LDFLAGS="-L$PWD/mswindows/osgeo4w/lib -lz" ./configure \
+ 	        --host=$conf_host \
+@@ -179,13 +184,13 @@ if ! [ -f mswindows/osgeo4w/configure-stamp ]; then
+ 		--enable-largefile \
+ 		--with-fftw \
+ 		--with-freetype \
+-		--with-proj-share=$OSGEO4W_ROOT_MSYS/share/proj \
++		--with-proj-share=$OSGEO4W_ROOT_MSYS/share \
+ 		--with-gdal=$PWD/mswindows/osgeo4w/gdal-config \
+ 		--with-geos=$PWD/mswindows/osgeo4w/geos-config \
+ 		--with-sqlite \
+ 		--with-regex \
+ 		--with-nls \
+-		--with-freetype-includes=$OSGEO4W_ROOT_MSYS/include/freetype2 \
++		--with-freetype-includes=$OSGEO4W_ROOT_MSYS/include/freetype \
+ 		--with-odbc \
+ 	        --with-cairo \
+                 --with-postgres \
+@@ -196,8 +201,8 @@ if ! [ -f mswindows/osgeo4w/configure-stamp ]; then
+ 	touch mswindows/osgeo4w/configure-stamp
+ fi
+ 
+-log make 
+-make -k || ( cat error.log >&3 && false ) 
++log make
++make -k -j4 || ( cat error.log >&3 && false )
+ 
+ log make install
+ make install
+@@ -222,8 +227,8 @@ sed -e "s#@VERSION@#$VERSION#g" -e "s#@GRASS_EXECUTABLE@#$GRASS_EXECUTABLE#g" \
  
  if [ -n "$PACKAGE_PATCH" ]; then
      log building vc libraries 
@@ -66,7 +113,7 @@ index 74e4e83..7a0fa77 100755
      mv mswindows/osgeo4w/vc/grass*.lib $OSGEO4W_ROOT_MSYS/apps/grass/grass-$VERSION/lib
      
      log creating package
-@@ -266,16 +267,16 @@ if [ -n "$PACKAGE_PATCH" ]; then
+@@ -266,16 +271,16 @@ if [ -n "$PACKAGE_PATCH" ]; then
  	apps/grass/grass-$VERSION/bin
      cp -uv /mingw${MINGW_POSTFIX}/etc/fonts/fonts.conf \
  	apps/grass/grass-$VERSION/etc

@@ -1,4 +1,4 @@
-{% set version = "7.4.2" %}
+{% set version = "7.4.4" %}
 
 package:
   name: grass
@@ -6,7 +6,7 @@ package:
 
 source:
   - url: https://grass.osgeo.org/grass74/source/grass-{{ version }}.tar.gz
-    sha256: 18eb19bc0aa4cd7be3f30f79ac83f9d0a29c63657f4c1b05bf4c5d5d57a8f46d
+    sha256: 96a39e273103f7375a670eba94fa3e5dad2819c5c5664c9aee8f145882a94e8c
     patches:
       - 0001-platform.make.in.patch  # [osx]
       - 0002-platform.make.in-linux.patch  # [linux]
@@ -19,9 +19,15 @@ source:
       - 0009-module.make.patch  # [osx]
       - 0010-shlib.make.patch  # [osx]
       - 0011-win-package-mklibs.patch  # [win]
+      - 0012-win-fix-cairo-no-fontconfig.patch  # [win]
+      - 0013-win-fix-gpde-make.patch  # [win]
+      - 0014-add-python2-pkg-support.patch  # [win]
 
 build:
-  number: 1
+  number: 1001
+  # Let's not compile Py2.7 src with Py3.x
+  skip_compile_pyc:
+    - "*/*.py"
 
 requirements:
   build:
@@ -36,63 +42,76 @@ requirements:
     - flex  # [unix]
     - m2-patch  # [win]
   host:
-    - python <3
-    - numpy
-    - gdal
-    - freetype
-    - cairo
-    - pandoc
-    - wxpython
+    - libgdal
+    - proj4
+    - geos
     - sqlite
-    - libpq  # [win]
     - jpeg
     - libpng
+    - giflib
     - libtiff
     - libiconv
     - fftw
-    - blas
-    - giflib
-    - python.app  # [osx]
-    - proj4
-    - geos
+    - freetype
+    - cairo
+    - openblas
     - krb5
+    - pandoc
+    {% if not win %}
+    - python <3
+    - python.app  # [osx]
+    - wxpython
+    - numpy
     - pillow
-    - liblas 1.8.*  # [win]
-    - libxdr  # [win]
-    - pdcurses  # [win]
-    # - gnu-regex  # [win]
+    {% else %}
+    # Python2 not needed in conda env, if building in msys2 env
+    - libpq
+    - liblas 1.8.*
+    # libxdr is static
+    - libxdr
+    - pdcurses
+    # - gnu-regex
+    {% endif %}
   run:
-    # TODO: Bunch of these are statically linked on Win; may be
-    #       able to skip run dependency, if no data files needed
-    - python <3
-    - numpy
-    - gdal
-    - freetype
-    - cairo
-    - matplotlib
-    - pandoc
-    - wxpython
+    # These are needed on Win for their Library/share data
+    - libgdal
+    - proj4
+    - geos
     - sqlite
     - jpeg
     - libpng
+    - giflib
     - libtiff
     - libiconv
     - fftw
-    - blas
-    - giflib
-    - python.app  # [osx]
-    - proj4
-    - geos
+    - freetype
+    - cairo
+    - openblas
     - krb5
+    - pandoc
+    {% if not win %}
+    - python <3
+    - python.app  # [osx]
+    - gdal
+    - wxpython
+    - matplotlib
+    - numpy
     - pillow
-    - pdcurses  # [win]
-    - liblas 1.8.*  # [win]
+    {% else %}
+    - libpq
+    - liblas 1.8.*
+    - pdcurses
+    {% endif %}
+    - grass-python2
 
 test:
+  requires:
+    # this ensures there is a `python2` available on PATH
+    - python2
   commands:
-  - grass74 --help
-  - grass74 --version
-  - grass74 --config
+    - grass74 --help
+    - grass74 --version
+    - grass74 --config
 
 about:
   home: https://grasswiki.osgeo.org/

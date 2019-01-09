@@ -20,7 +20,7 @@ if not exist "%msys_64%" (
   exit 1
 )
 
-set "msys_64_bin=C:\msys64\usr\bin"
+set "msys_64_bin=%msys_64%\usr\bin"
 
 pushd "%msys_64_bin%"
   :: NOTE: cygpath.exe -u will prefix with /cygdrive *outside* of msys2
@@ -34,7 +34,7 @@ pushd "%msys_64_bin%"
   :: PREFIX=/q/osgf/conda-bld/_h_env
   FOR /F "delims=" %%i IN ('cygpath.exe -u "%PREFIX%"') DO set "PREFIX=%%i"
   :: Not set now?
-  :: FOR /F "delims=" %%i IN ('cygpath.exe -u "%PYTHON%"') DO set "PYTHON=%%i"
+  FOR /F "delims=" %%i IN ('cygpath.exe -u "%PYTHON%"') DO set "PYTHON=%%i"
   :: RECIPE_DIR=/c/conda/osgeo-forge/feedstocks/grass/recipe
   FOR /F "delims=" %%i IN ('cygpath.exe -u "%RECIPE_DIR%"') DO set "RECIPE_DIR=%%i"
   :: SP_DIR=/q/osgf/conda-bld/_h_env/Lib/site-packages
@@ -54,6 +54,7 @@ set "ACLOCAL_PATH=%LIBRARY_PREFIX_U%/share/aclocal:/usr/share/aclocal"
 
 :: Use -l (--login) here
 :: package.sh MUST be called from root directory of GRASS src tree
-"%msys_64_bin%\bash.exe" -lxc "mswindows\package.sh"
+"%msys_64_bin%\bash.exe" -lxc "./mswindows/osgeo4w/package.sh"
 if %errorlevel% neq 0 exit /b %errorlevel%
+
 exit 0

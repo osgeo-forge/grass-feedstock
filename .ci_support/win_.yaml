@@ -16,6 +16,8 @@ jpeg:
 - '9'
 krb5:
 - '1.16'
+libgdal:
+- '2.3'
 libiconv:
 - '1.15'
 libpng:
@@ -24,6 +26,8 @@ libtiff:
 - 4.0.9
 numpy:
 - '1.11'
+openblas:
+- 0.3.3
 pin_run_as_build:
   cairo:
     max_pin: x.x
@@ -39,12 +43,16 @@ pin_run_as_build:
     max_pin: x
   krb5:
     max_pin: x.x
+  libgdal:
+    max_pin: x.x
   libiconv:
     max_pin: x.x
   libpng:
     max_pin: x.x
   libtiff:
     max_pin: x
+  openblas:
+    max_pin: x.x.x
   proj4:
     max_pin: x.x.x
   sqlite:

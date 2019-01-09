@@ -1,0 +1,13 @@
+diff --git a/lib/cairodriver/text.c b/lib/cairodriver/text.c
+index bf1ed06..35d90a2 100644
+--- a/lib/cairodriver/text.c
++++ b/lib/cairodriver/text.c
+@@ -15,6 +15,8 @@
+ #include <grass/glocale.h>
+ #include "cairodriver.h"
+ 
++#define CAIRO_HAS_FT_FONT 0
++
+ #if CAIRO_HAS_FT_FONT
+ #include <cairo-ft.h>
+ #include <fontconfig/fontconfig.h>

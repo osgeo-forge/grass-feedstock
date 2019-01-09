@@ -1,0 +1,17 @@
+diff --git a/lib/gpde/Makefile b/lib/gpde/Makefile
+index 3d0be6b..6ec6044 100644
+--- a/lib/gpde/Makefile
++++ b/lib/gpde/Makefile
+@@ -1,10 +1,11 @@
+ MODULE_TOPDIR = ../..
+ 
+ EXTRA_LIBS=$(GISLIB) $(RASTERLIB) $(RASTER3DLIB) $(GMATHLIB) $(OMPLIB) $(MATHLIB)
++LIBES=$(GISLIB) $(RASTERLIB) $(RASTER3DLIB) $(GMATHLIB) $(OMPLIB) $(MATHLIB)
+ EXTRA_CFLAGS = $(OMPCFLAGS)
+ # needed? $(OMPLIBPATH)
+ 
+-LIB_NAME = $(GPDE_LIBNAME)
++LIB = GPDE
+ 
+ include $(MODULE_TOPDIR)/include/Make/Lib.make
+ include $(MODULE_TOPDIR)/include/Make/Doxygen.make
