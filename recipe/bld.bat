@@ -11,6 +11,8 @@ set MSYSTEM=MINGW64
 :: set MSYS2_PATH_TYPE=inherit
 set CHERE_INVOKING=1
 
+copy /y "%RECIPE_DIR%\grass_env.bat" "%LIBRARY_BIN%\grass_env.bat"
+
 set "saved_recipe_dir=%RECIPE_DIR%"
 
 set "msys_64=C:\msys64"

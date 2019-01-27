@@ -24,7 +24,7 @@ source:
       - 0014-add-python2-pkg-support.patch  # [win]
 
 build:
-  number: 1001
+  number: 1002
   # Let's not compile Py2.7 src with Py3.x
   skip_compile_pyc:
     - "*/*.py"
@@ -88,7 +88,7 @@ requirements:
     - cairo
     - openblas
     - krb5
-    - pandoc
+    # - pandoc
     {% if not win %}
     - python <3
     - python.app  # [osx]
@@ -112,6 +112,7 @@ test:
     - grass74 --help
     - grass74 --version
     - grass74 --config
+    - if not exist "%LIBRARY_BIN%\\grass_env.bat" exit 1  # [win]
 
 about:
   home: https://grasswiki.osgeo.org/
