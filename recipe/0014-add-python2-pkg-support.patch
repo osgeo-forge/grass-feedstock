@@ -1,5 +1,5 @@
 diff --git a/mswindows/osgeo4w/env.bat.tmpl b/mswindows/osgeo4w/env.bat.tmpl
-index be5b243..7980acc 100644
+index be5b243..94c3342 100644
 --- a/mswindows/osgeo4w/env.bat.tmpl
 +++ b/mswindows/osgeo4w/env.bat.tmpl
 @@ -8,12 +8,12 @@ REM Uncomment if you want to use Bash instead of Cmd
@@ -7,8 +7,9 @@ index be5b243..7980acc 100644
  REM set GRASS_SH=%OSGEO4W_ROOT%\apps\msys\bin\sh.exe
  
 -set GRASS_PYTHON=%OSGEO4W_ROOT%\bin\python.exe
+-set PYTHONHOME=%OSGEO4W_ROOT%\apps\Python27
 +set GRASS_PYTHON=%OSGEO4W_ROOT%\bin\python2
- set PYTHONHOME=%OSGEO4W_ROOT%\apps\Python27
++REM PYTHONHOME is set in launch wrapper script
  
 -set GRASS_PROJSHARE=%OSGEO4W_ROOT%\share\proj
 +set GRASS_PROJSHARE=%OSGEO4W_ROOT%\share
@@ -19,10 +20,10 @@ index be5b243..7980acc 100644
  set GEOTIFF_CSV=%OSGEO4W_ROOT%\share\epsg_csv
  
 diff --git a/mswindows/osgeo4w/grass.bat.tmpl b/mswindows/osgeo4w/grass.bat.tmpl
-index 3748626..5a546ff 100644
+index 3748626..a46f992 100644
 --- a/mswindows/osgeo4w/grass.bat.tmpl
 +++ b/mswindows/osgeo4w/grass.bat.tmpl
-@@ -5,14 +5,32 @@ rem # GRASS initialization bat script (OSGeo4W)
+@@ -5,14 +5,33 @@ rem # GRASS initialization bat script (OSGeo4W)
  rem #
  rem #########################################################################
  
@@ -45,8 +46,9 @@ index 3748626..5a546ff 100644
 +if exist "%where_py2%" (
 +  if not "%where_py2%" == "%GRASS_PYTHON%" (
 +    set "GRASS_PYTHON=%where_py2%"
-+    rem Assume this is set in sys environ
-+    set PYTHONHOME=
++    rem Assume PYTHONHOME is set in sys environ
++  ) else (
++    set PYTHONHOME=%OSGEO4W_ROOT%\apps\Python27
 +  )
 +)
 +
@@ -57,7 +59,7 @@ index 3748626..5a546ff 100644
  rem
  rem Launch GRASS GIS
  rem
-@@ -22,3 +40,5 @@ rem
+@@ -22,3 +41,5 @@ rem
  rem Pause on error
  rem
  if %ERRORLEVEL% GEQ 1 pause
