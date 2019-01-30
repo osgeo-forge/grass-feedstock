@@ -12,7 +12,7 @@ index 00a597a..407b6c8 100755
  
  [ -d mswindows/osgeo4w/vc ] || mkdir mswindows/osgeo4w/vc
 diff --git a/mswindows/osgeo4w/package.sh b/mswindows/osgeo4w/package.sh
-index 8816c5f..967edc6 100755
+index 8816c5f..6ebbcf7 100755
 --- a/mswindows/osgeo4w/package.sh
 +++ b/mswindows/osgeo4w/package.sh
 @@ -40,7 +40,7 @@ else
@@ -31,8 +31,7 @@ index 8816c5f..967edc6 100755
 -dll_to_a $OSGEO4W_ROOT_MSYS/bin/proj_5_2.dll    mswindows/osgeo4w/lib/libproj
 +dll_to_a $OSGEO4W_ROOT_MSYS/bin/proj.dll    mswindows/osgeo4w/lib/libproj
  dll_to_a $OSGEO4W_ROOT_MSYS/bin/iconv.dll       mswindows/osgeo4w/lib/libiconv
--dll_to_a $OSGEO4W_ROOT_MSYS/bin/gdal204.dll     mswindows/osgeo4w/lib/libgdal
-+dll_to_a $OSGEO4W_ROOT_MSYS/bin/gdal203.dll     mswindows/osgeo4w/lib/libgdal
+ dll_to_a $OSGEO4W_ROOT_MSYS/bin/gdal204.dll     mswindows/osgeo4w/lib/libgdal
  dll_to_a $OSGEO4W_ROOT_MSYS/bin/liblas_c.dll    mswindows/osgeo4w/lib/liblas_c
  dll_to_a $OSGEO4W_ROOT_MSYS/bin/geos_c.dll      mswindows/osgeo4w/lib/libgeos_c
 -dll_to_a $OSGEO4W_ROOT_MSYS/bin/libtiff.dll     mswindows/osgeo4w/lib/libtiff

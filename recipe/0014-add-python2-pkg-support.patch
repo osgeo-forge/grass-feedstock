@@ -5,20 +5,20 @@ index be5b243..94c3342 100644
 @@ -8,12 +8,12 @@ REM Uncomment if you want to use Bash instead of Cmd
  REM Note that msys package must be also installed
  REM set GRASS_SH=%OSGEO4W_ROOT%\apps\msys\bin\sh.exe
- 
+
 -set GRASS_PYTHON=%OSGEO4W_ROOT%\bin\python.exe
 -set PYTHONHOME=%OSGEO4W_ROOT%\apps\Python27
 +set GRASS_PYTHON=%OSGEO4W_ROOT%\bin\python2
 +REM PYTHONHOME is set in launch wrapper script
- 
+
 -set GRASS_PROJSHARE=%OSGEO4W_ROOT%\share\proj
 +set GRASS_PROJSHARE=%OSGEO4W_ROOT%\share
- 
+
 -set PROJ_LIB=%OSGEO4W_ROOT%\share\proj
 +set PROJ_LIB=%OSGEO4W_ROOT%\share
  set GDAL_DATA=%OSGEO4W_ROOT%\share\gdal
  set GEOTIFF_CSV=%OSGEO4W_ROOT%\share\epsg_csv
- 
+
 diff --git a/mswindows/osgeo4w/grass.bat.tmpl b/mswindows/osgeo4w/grass.bat.tmpl
 index 3748626..a46f992 100644
 --- a/mswindows/osgeo4w/grass.bat.tmpl
@@ -26,21 +26,21 @@ index 3748626..a46f992 100644
 @@ -5,14 +5,33 @@ rem # GRASS initialization bat script (OSGeo4W)
  rem #
  rem #########################################################################
- 
+
 -SET OSGEO4W_ROOT=@osgeo4w@
 +setlocal
 +
 +for %%a in (%~dp0\..) do set LIBRARY_PREFIX=%%~fa
 +
 +SET OSGEO4W_ROOT=%LIBRARY_PREFIX%
- 
+
  rem
  rem Set environmental variables
  rem
 -call %OSGEO4W_ROOT%\bin\o4w_env.bat
 +if exist %OSGEO4W_ROOT%\bin\osgf_env.bat call %OSGEO4W_ROOT%\bin\osgf_env.bat
  call %OSGEO4W_ROOT%\apps\grass\grass-@VERSION@\etc\env.bat
- 
+
 +rem See if python2 is already available in the environ
 +for /f %%i in ('where python2') do set where_py2=%%i
 +if exist "%where_py2%" (
